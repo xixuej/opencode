@@ -1395,6 +1395,11 @@ function TextPart(props: { last: boolean; part: TextPart; message: AssistantMess
   const ctx = use()
   const { theme, syntax } = useTheme()
   const streaming = createMemo(() => !props.message.time.completed)
+  const content = createMemo(() => {
+    const text = props.part.text.trim()
+    if (streaming()) return text + "\n"
+    return text
+  })
   return (
     <Show when={props.part.text.trim()}>
       <box id={"text-" + props.part.id} paddingLeft={3} marginTop={1} flexShrink={0}>
@@ -1403,7 +1408,7 @@ function TextPart(props: { last: boolean; part: TextPart; message: AssistantMess
             <markdown
               syntaxStyle={syntax()}
               streaming={streaming()}
-              content={props.part.text.trim()}
+              content={content()}
               conceal={ctx.conceal()}
             />
           </Match>
@@ -1413,7 +1418,7 @@ function TextPart(props: { last: boolean; part: TextPart; message: AssistantMess
               drawUnstyledText={false}
               streaming={streaming()}
               syntaxStyle={syntax()}
-              content={props.part.text.trim()}
+              content={content()}
               conceal={ctx.conceal()}
               fg={theme.text}
             />
